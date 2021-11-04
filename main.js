@@ -90,7 +90,9 @@ function coder(){
     copy = document.createElement("button");
     copy.innerText = "Copier dans le presse papier";
     copy.className = "valider espaces";
-    copy.setAttribute('onclick',"copytoclipbard('" + chaineFinale + "');");
+
+
+    copy.setAttribute('onclick','copytoclipbard("' + chaineFinale + '");');
     document.getElementsByClassName("centered")[1].appendChild(copy)
 
     console.log(chaineFinale);

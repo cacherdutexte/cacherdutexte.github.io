@@ -1,3 +1,48 @@
+function int(str){
+    return parseInt(str);
+}
+
+function str(l){
+    return l.toString()
+}
+
+function base6(nombre){
+    if (nombre >= 6**4) {
+        return "Erreur";
+    }
+        
+    var Base6 = [0, 0, 0, 0];
+    while (nombre > 0) {
+        Base6[3] = Base6[3] + 1;
+        nombre -= 1;
+        if (int(Base6[3]) >= 6) {
+            Base6[3] = 0
+            Base6[2] = Base6[2] + 1
+        }
+        if (int(Base6[2]) >= 6) {
+            Base6[2] = 0
+            Base6[1] = Base6[1] + 1
+        }
+        if (int(Base6[1]) >= 6) {
+            Base6[1] = 0
+            Base6[0] = Base6[0] + 1
+        }
+            
+    }
+        
+    
+
+    base6str = "";
+    for (const el of Base6) {
+        base6str += str(el);
+    }
+       
+
+    return base6str
+}
+    
+    
+
 function destroy(id){
     var elem = document.getElementById(id);
     elem.parentNode.removeChild(elem);
@@ -33,8 +78,8 @@ function coder(){
     console.log("longeur de acacher " +  acacher.length)
     
     
-    if (original.length < acacher.length * 8) {
-        err = "Erreur ! Le message original est trop court ! Il a besoin de " + (acacher.length * 8) + " caractères. <br> <strong> Soit " + (acacher.length * 8 - original.length) + " de plus.</strong><br> Ou, on peut aussi <strong>raccoucir le message caché de " + (acacher.length - Math.round((original.length / 8))) +  " lettres.</strong>";
+    if (original.length < acacher.length * 4) {
+        err = "Erreur ! Le message original est trop court ! Il a besoin de " + (acacher.length * 4) + " caractères. <br> <strong> Soit " + (acacher.length * 4 - original.length) + " de plus.</strong><br> Ou, on peut aussi <strong>raccoucir le message caché de " + (acacher.length - Math.round((original.length / 4))) +  " lettres.</strong>";
         document.getElementById("textresultat").innerHTML  = err;
         return err;
     }
@@ -44,21 +89,19 @@ function coder(){
     listeBase2 = []
     for (const lettre of acacher) {
         console.log(lettre);
-        binary = dec2bin(lettre.charCodeAt(0)).toString()
-        if (binary.length > 8) {
+        binary = base6(lettre.charCodeAt(0)).toString()
+        if (binary == "Erreur") {
             err = "Le caractère " + lettre + " est trop loin dans la table UTF-8";
             document.getElementById("textresultat").innerHTML  = err;
             return err;
-        }
-        while (binary.length < 8) {
-            binary = '0' + binary;
         }
             
         listeBase2.push(binary);
     }
 
     console.log(listeBase2);
-        
+    
+    var possibilites = ["", "\u200C", "\u200D", "\u200E", "\u200F", "\u034F"];
     
 
     var chaineFinale = "";
@@ -66,8 +109,8 @@ function coder(){
     for (const binaires of listeBase2) {
         for (const unbit of binaires) {
             chaineFinale += original[compteur];
-            if (unbit == "1") {
-                chaineFinale += "\u034f"
+            if (int(unbit) > 0) {
+                chaineFinale += possibilites[int(unbit)]
             }
                 
             compteur += 1
@@ -94,7 +137,7 @@ function coder(){
     copy.innerText = "Copier dans le presse papier";
     copy.className = "valider espaces";
 
-    console.log(chaineFinale.includes('\n'));
+    
 
     textacopier = chaineFinale;
 
@@ -118,10 +161,11 @@ function decoder(){
     var listebinaire = [];
     var binaire = "";
     var caractere = 1;
+    var possibilites = ["", "\u200C", "\u200D", "\u200E", "\u200F", "\u034F"];
     while (caractere < message.length) {
         
-        if (message[caractere] == "\u034f") {
-            binaire += "1";
+        if (possibilites.includes(message[caractere])) {
+            binaire += str(possibilites.indexOf(message[caractere]))
         } else {
             binaire += "0"
             caractere -= 1
@@ -131,7 +175,7 @@ function decoder(){
         
         
 
-        if (binaire.length == 8 && binaire != "00000000") {
+        if (binaire.length == 4 && binaire != "0000") {
             listebinaire.push(binaire)
             binaire = "";
         }
@@ -144,7 +188,7 @@ function decoder(){
     
     var strfinale = "";
     for (lettre of listebinaire) {
-        strfinale += String.fromCharCode(parseInt(lettre, 2));
+        strfinale += String.fromCharCode(parseInt(lettre, 6));
     }
     
         

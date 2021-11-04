@@ -3,12 +3,15 @@ function destroy(id){
     elem.parentNode.removeChild(elem);
 }
 
+var textacopier;
+
 function dec2bin(dec){
     return (dec >>> 0).toString(2);
 }
 
 
-function copytoclipbard(str) {
+function copytoclipbard() {
+    str = textacopier;
     const el = document.createElement('textarea');
     el.value = str;
     document.body.appendChild(el);
@@ -91,9 +94,15 @@ function coder(){
     copy.innerText = "Copier dans le presse papier";
     copy.className = "valider espaces";
 
+    console.log(chaineFinale.includes('\n'));
 
-    copy.setAttribute('onclick','copytoclipbard("' + chaineFinale + '");');
-    document.getElementsByClassName("centered")[1].appendChild(copy)
+    textacopier = chaineFinale;
+
+
+    copy.setAttribute('onclick','copytoclipbard()');
+    document.getElementsByClassName("centered")[1].appendChild(copy);
+
+    
 
     console.log(chaineFinale);
     return chaineFinale;
